@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DroidPrivacy</string>
+    <string name="xposed_module_desc">DroidPrivacy-基于xposed的隐私合规检测模块</string>
+</resources>

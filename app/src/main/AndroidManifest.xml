@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.privacy2345.droidprivacy">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <application
+        android:name=".app.MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.UserPricacyApiCheck">
+        <activity android:name=".page.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".page.ResultSettingActivity" />
+        <activity android:name=".page.CheckToolActivity" />
+
+        <provider
+            android:name=".provider.MultiprocessSharedPreferences"
+            android:authorities="com.privacy2345.droidprivacy.provider"
+            android:exported="true" />
+
+        <!-- 是否为Xposed模块 -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <!-- 模块的简介-->
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/xposed_module_desc" />
+        <!-- 模块最低支持的Api版本-->
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" />
+
+        <receiver android:name=".output.DataReceiver">
+            <intent-filter>
+                <action android:name="com.privacy2345.droidprivacy.write.data" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
