@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.content.BroadcastReceiver;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.ContextWrapper;
 import android.hardware.Camera;
@@ -17,6 +18,8 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -109,6 +112,9 @@ public class HookConfigManager {
         addSystemProperties();
         addSensor();
         addAndroidId();
+        addMediaRecorder();
+        addPhoneNumber();
+        addClipboard();
         addAppInfo();
         addCellInfo();
         addNetType();
@@ -558,6 +564,27 @@ public class HookConfigManager {
                 .setListener(listener).build());
     }
 
+    private void addMediaRecorder() {
+        hookMethodList.add(new HookMethod.Builder().setCls(MediaRecorder.class).setMethodName("start")
+                .setCategory(Behavior.Category.MEDIA_RECORDER).setRule(Behavior.Rule.MEDIA_RECORDING).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(AudioRecord.class).setMethodName("startRecording")
+                .setCategory(Behavior.Category.MEDIA_RECORDER).setRule(Behavior.Rule.MEDIA_RECORDING).build());
+    }
+
+    private void addPhoneNumber() {
+        hookMethodList.add(new HookMethod.Builder().setCls(TelephonyManager.class).setMethodName("getLine1Number")
+                .setCategory(Behavior.Category.PHONE_NUMBER).setRule(Behavior.Rule.PHONE_NUMBER).build());
+    }
+
+    private void addClipboard() {
+        hookMethodList.add(new HookMethod.Builder().setCls(ClipboardManager.class).setMethodName("setPrimaryClip")
+                .setCategory(Behavior.Category.CLIPBOARD).setRule(Behavior.Rule.SET_CLIPBOARD).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(ClipboardManager.class).setMethodName("getPrimaryClip")
+                .setCategory(Behavior.Category.CLIPBOARD).setRule(Behavior.Rule.GET_CLIPBOARD).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(ClipboardManager.class).setMethodName("addPrimaryClipChangedListener")
+                .setCategory(Behavior.Category.CLIPBOARD).setRule(Behavior.Rule.LISTEN_CLIPBOARD).build());
+    }
+
     private void addAppInfo() {
         hookMethodList.add(new HookMethod.Builder().setClsName("android.app.ApplicationPackageManager").setMethodName("getPackageInfo")
                 .setCategory(Behavior.Category.APP_INFO).setRule(Behavior.Rule.APP_INFO)
@@ -968,7 +995,13 @@ public class HookConfigManager {
         checkItemList.add(getCheckItem(Behavior.Category.BLUETOOTH, Arrays.asList(Behavior.Rule.SCAN_BLUETOOTH,
                 Behavior.Rule.BLUETOOTH_INFO)));
 
+        checkItemList.add(getCheckItem(Behavior.Category.MEDIA_RECORDER, Collections.singletonList(Behavior.Rule.MEDIA_RECORDING)));
+
         checkItemList.add(getCheckItem(Behavior.Category.CAMERA, Arrays.asList(Behavior.Rule.TAKE_PHOTO, Behavior.Rule.CAMERA_LIST)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.CLIPBOARD, Arrays.asList(Behavior.Rule.GET_CLIPBOARD,
+                Behavior.Rule.SET_CLIPBOARD,
+                Behavior.Rule.LISTEN_CLIPBOARD)));
 
         checkItemList.add(getCheckItem(Behavior.Category.MEDIA, Arrays.asList(Behavior.Rule.MEDIA_AUDIO,
                 Behavior.Rule.MEDIA_IMAGE,
@@ -981,6 +1014,8 @@ public class HookConfigManager {
         checkItemList.add(getCheckItem(Behavior.Category.PHONE_DATA, Collections.singletonList(Behavior.Rule.PHONE_DATA)));
 
         checkItemList.add(getCheckItem(Behavior.Category.PHONE_SERVICE_STATE, Collections.singletonList(Behavior.Rule.PHONE_SERVICE_STATE)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.PHONE_NUMBER, Collections.singletonList(Behavior.Rule.PHONE_NUMBER)));
 
         checkItemList.add(getCheckItem(Behavior.Category.SHELL, Collections.singletonList(Behavior.Rule.SHELL)));
 
