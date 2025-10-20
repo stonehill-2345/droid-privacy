@@ -29,6 +29,9 @@ public class Behavior {
         String SYSTEM_PROPERTIES = "系统属性(调用多！)";
         String SENSOR = "传感器";
         String ANDROID_ID = "AndroidId";
+        String MEDIA_RECORDER = "音频录制";
+        String PHONE_NUMBER = "手机号码";
+        String CLIPBOARD = "剪贴板";
         String APP_INFO = "应用信息";
         String BROWSER_BOOKMARKS = "浏览器书签";
         String CELL_INFO = "移动网参数";
@@ -109,6 +112,14 @@ public class Behavior {
         String LISTEN_SENSOR = "监听传感器-高敏";
 
         String ANDROID_ID = "获取AndroidId-高敏";
+
+        String MEDIA_RECORDING = "音频录制-高敏";
+
+        String PHONE_NUMBER = "获取手机号码-高敏";
+
+        String GET_CLIPBOARD = "读取剪贴板";
+        String SET_CLIPBOARD = "写入剪贴板";
+        String LISTEN_CLIPBOARD = "监听剪贴板";
 
         String APP_INFO = "获取指定应用信息-高敏";
 
