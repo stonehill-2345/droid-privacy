@@ -33,6 +33,10 @@ public class Behavior {
         String PHONE_NUMBER = "手机号码";
         String CLIPBOARD = "剪贴板";
         String APP_INFO = "应用信息";
+        String SMS = "短信";
+        String CALL_LOG = "通话记录";
+        String CONTACTS = "通讯录";
+        String VOICE_MAIL = "语音信箱";
         String BROWSER_BOOKMARKS = "浏览器书签";
         String CELL_INFO = "移动网参数";
         String MEDIA = "多媒体";
@@ -123,6 +127,14 @@ public class Behavior {
 
         String APP_INFO = "获取指定应用信息-高敏";
 
+        String SMS_QUERY = "获取短信-高敏";
+        String SMS_SEND = "发送短信-高敏";
+
+        String CALL_LOG = "操作通话记录-高敏";
+
+        String CONTACTS = "操作通讯录-高敏";
+
+        String VOICE_MAIL = "操作语音信箱-高敏";
 
         String BROWSER_BOOKMARKS = "操作浏览器书签-高敏";
 
