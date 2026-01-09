@@ -28,9 +28,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.provider.Telephony;
+import android.provider.VoicemailContract;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
@@ -121,6 +126,7 @@ public class HookConfigManager {
         addPhoneCallState();
         addPhoneData();
         addPhoneService();
+        addSms();
         addBroadcast();
         addShell();
         addMsaId();
@@ -416,7 +422,19 @@ public class HookConfigManager {
                     return;
                 }
                 Log.d(TAG, "ContentResolver uriString:" + uriString);
-                if (uriString.contains("content://browser/bookmarks") || uriString.contains("content://com.android.chrome.browser/bookmarks")) {// 浏览器书签
+                if (uriString.contains(Telephony.Sms.CONTENT_URI.toString())) {// 短信
+                    hookMethod.setCategory(Behavior.Category.SMS);
+                    hookMethod.setRule(Behavior.Rule.SMS_QUERY);
+                } else if (uriString.contains(CallLog.Calls.CONTENT_URI.toString())) {// 通话记录
+                    hookMethod.setCategory(Behavior.Category.CALL_LOG);
+                    hookMethod.setRule(Behavior.Rule.CALL_LOG);
+                } else if (uriString.contains(ContactsContract.Contacts.CONTENT_URI.toString())) {// 通讯录
+                    hookMethod.setCategory(Behavior.Category.CONTACTS);
+                    hookMethod.setRule(Behavior.Rule.CONTACTS);
+                } else if (uriString.contains(VoicemailContract.Voicemails.CONTENT_URI.toString())) {// 语音信箱
+                    hookMethod.setCategory(Behavior.Category.VOICE_MAIL);
+                    hookMethod.setRule(Behavior.Rule.VOICE_MAIL);
+                } else if (uriString.contains("content://browser/bookmarks") || uriString.contains("content://com.android.chrome.browser/bookmarks")) {// 浏览器书签
                     hookMethod.setCategory(Behavior.Category.BROWSER_BOOKMARKS);
                     hookMethod.setRule(Behavior.Rule.BROWSER_BOOKMARKS);
                 } else if (uriString.contains(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString())) {// 多媒体-图片
@@ -660,6 +678,19 @@ public class HookConfigManager {
     private void addPhoneService() {
         hookMethodList.add(new HookMethod.Builder().setCls(TelephonyManager.class).setMethodName("getServiceState")
                 .setCategory(Behavior.Category.PHONE_SERVICE_STATE).setRule(Behavior.Rule.PHONE_SERVICE_STATE).build());
+    }
+
+    private void addSms() {
+        hookMethodList.add(new HookMethod.Builder().setCls(SmsManager.class).setMethodName("sendTextMessageInternal")
+                .setCategory(Behavior.Category.SMS).setRule(Behavior.Rule.SMS_SEND).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(SmsManager.class).setMethodName("sendMultipartTextMessageInternal")
+                .setCategory(Behavior.Category.SMS).setRule(Behavior.Rule.SMS_SEND).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(SmsManager.class).setMethodName("sendDataMessage")
+                .setCategory(Behavior.Category.SMS).setRule(Behavior.Rule.SMS_SEND).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(SmsManager.class).setMethodName("sendTextMessageWithSelfPermissions")
+                .setCategory(Behavior.Category.SMS).setRule(Behavior.Rule.SMS_SEND).build());
+        hookMethodList.add(new HookMethod.Builder().setCls(SmsManager.class).setMethodName("sendDataMessageWithSelfPermissions")
+                .setCategory(Behavior.Category.SMS).setRule(Behavior.Rule.SMS_SEND).build());
     }
 
     private void addBroadcast() {
@@ -1006,6 +1037,15 @@ public class HookConfigManager {
         checkItemList.add(getCheckItem(Behavior.Category.MEDIA, Arrays.asList(Behavior.Rule.MEDIA_AUDIO,
                 Behavior.Rule.MEDIA_IMAGE,
                 Behavior.Rule.MEDIA_VIDEO)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.SMS, Arrays.asList(Behavior.Rule.SMS_SEND,
+                Behavior.Rule.SMS_QUERY)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.CALL_LOG, Collections.singletonList(Behavior.Rule.CALL_LOG)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.CONTACTS, Collections.singletonList(Behavior.Rule.CONTACTS)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.VOICE_MAIL, Collections.singletonList(Behavior.Rule.VOICE_MAIL)));
 
         checkItemList.add(getCheckItem(Behavior.Category.BROWSER_BOOKMARKS, Collections.singletonList(Behavior.Rule.BROWSER_BOOKMARKS)));
 
