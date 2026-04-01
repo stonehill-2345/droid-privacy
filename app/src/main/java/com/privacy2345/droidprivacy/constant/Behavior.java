@@ -31,12 +31,15 @@ public class Behavior {
         String ANDROID_ID = "AndroidId";
         String MEDIA_RECORDER = "音频录制";
         String PHONE_NUMBER = "手机号码";
+        String PHONE_ROAMING = "手机漫游标识";
         String CLIPBOARD = "剪贴板";
         String APP_INFO = "应用信息";
         String SMS = "短信";
         String CALL_LOG = "通话记录";
         String CONTACTS = "通讯录";
+        String APN = "网络接入标识";
         String VOICE_MAIL = "语音信箱";
+        String CALENDAR = "日历";
         String BROWSER_BOOKMARKS = "浏览器书签";
         String CELL_INFO = "移动网参数";
         String MEDIA = "多媒体";
@@ -121,6 +124,8 @@ public class Behavior {
 
         String PHONE_NUMBER = "获取手机号码-高敏";
 
+        String PHONE_ROAMING = "获取手机漫游标识";
+
         String GET_CLIPBOARD = "读取剪贴板";
         String SET_CLIPBOARD = "写入剪贴板";
         String LISTEN_CLIPBOARD = "监听剪贴板";
@@ -134,7 +139,11 @@ public class Behavior {
 
         String CONTACTS = "操作通讯录-高敏";
 
+        String APN = "获取网络接入标识-高敏";
+
         String VOICE_MAIL = "操作语音信箱-高敏";
+
+        String CALENDAR = "操作日历-高敏";
 
         String BROWSER_BOOKMARKS = "操作浏览器书签-高敏";
 

@@ -28,6 +28,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.CalendarContract;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -119,6 +120,7 @@ public class HookConfigManager {
         addAndroidId();
         addMediaRecorder();
         addPhoneNumber();
+        addPhoneRoaming();
         addClipboard();
         addAppInfo();
         addCellInfo();
@@ -431,9 +433,15 @@ public class HookConfigManager {
                 } else if (uriString.contains(ContactsContract.Contacts.CONTENT_URI.toString())) {// 通讯录
                     hookMethod.setCategory(Behavior.Category.CONTACTS);
                     hookMethod.setRule(Behavior.Rule.CONTACTS);
+                } else if (uriString.contains(Telephony.Carriers.CONTENT_URI.toString())) {// 网络接入标识
+                    hookMethod.setCategory(Behavior.Category.APN);
+                    hookMethod.setRule(Behavior.Rule.APN);
                 } else if (uriString.contains(VoicemailContract.Voicemails.CONTENT_URI.toString())) {// 语音信箱
                     hookMethod.setCategory(Behavior.Category.VOICE_MAIL);
                     hookMethod.setRule(Behavior.Rule.VOICE_MAIL);
+                } else if (uriString.contains(CalendarContract.Events.CONTENT_URI.toString())) {// 日历
+                    hookMethod.setCategory(Behavior.Category.CALENDAR);
+                    hookMethod.setRule(Behavior.Rule.CALENDAR);
                 } else if (uriString.contains("content://browser/bookmarks") || uriString.contains("content://com.android.chrome.browser/bookmarks")) {// 浏览器书签
                     hookMethod.setCategory(Behavior.Category.BROWSER_BOOKMARKS);
                     hookMethod.setRule(Behavior.Rule.BROWSER_BOOKMARKS);
@@ -519,6 +527,9 @@ public class HookConfigManager {
                 } else if (arg.contains("gsm.sim.operator.iso-country") || arg.contains("gsm.operator.iso-country")) {
                     hookMethod.setCategory(Behavior.Category.SIM);
                     hookMethod.setRule(Behavior.Rule.SIM_COUNTRY_ISO);
+                } else if (arg.contains("gsm.operator.isroaming")) {
+                    hookMethod.setCategory(Behavior.Category.PHONE_ROAMING);
+                    hookMethod.setRule(Behavior.Rule.PHONE_ROAMING);
                 } else if (arg.contains("gsm.network.type")) {
                     hookMethod.setCategory(Behavior.Category.NET_INFO);
                     hookMethod.setRule(Behavior.Rule.NET_TYPE);
@@ -592,6 +603,11 @@ public class HookConfigManager {
     private void addPhoneNumber() {
         hookMethodList.add(new HookMethod.Builder().setCls(TelephonyManager.class).setMethodName("getLine1Number")
                 .setCategory(Behavior.Category.PHONE_NUMBER).setRule(Behavior.Rule.PHONE_NUMBER).build());
+    }
+
+    private void addPhoneRoaming() {
+        hookMethodList.add(new HookMethod.Builder().setCls(TelephonyManager.class).setMethodName("isNetworkRoaming")
+                .setCategory(Behavior.Category.PHONE_ROAMING).setRule(Behavior.Rule.PHONE_ROAMING).build());
     }
 
     private void addClipboard() {
@@ -1047,6 +1063,8 @@ public class HookConfigManager {
 
         checkItemList.add(getCheckItem(Behavior.Category.VOICE_MAIL, Collections.singletonList(Behavior.Rule.VOICE_MAIL)));
 
+        checkItemList.add(getCheckItem(Behavior.Category.CALENDAR, Collections.singletonList(Behavior.Rule.CALENDAR)));
+
         checkItemList.add(getCheckItem(Behavior.Category.BROWSER_BOOKMARKS, Collections.singletonList(Behavior.Rule.BROWSER_BOOKMARKS)));
 
         checkItemList.add(getCheckItem(Behavior.Category.PHONE_CALL_STATE, Collections.singletonList(Behavior.Rule.PHONE_CALL_STATE)));
@@ -1055,7 +1073,11 @@ public class HookConfigManager {
 
         checkItemList.add(getCheckItem(Behavior.Category.PHONE_SERVICE_STATE, Collections.singletonList(Behavior.Rule.PHONE_SERVICE_STATE)));
 
+        checkItemList.add(getCheckItem(Behavior.Category.APN, Collections.singletonList(Behavior.Rule.APN)));
+
         checkItemList.add(getCheckItem(Behavior.Category.PHONE_NUMBER, Collections.singletonList(Behavior.Rule.PHONE_NUMBER)));
+
+        checkItemList.add(getCheckItem(Behavior.Category.PHONE_ROAMING, Collections.singletonList(Behavior.Rule.PHONE_ROAMING)));
 
         checkItemList.add(getCheckItem(Behavior.Category.SHELL, Collections.singletonList(Behavior.Rule.SHELL)));
 
